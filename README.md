@@ -53,7 +53,8 @@ another machine on the LAN.
 
 - `docs/PKS_dokumentacia.pdf` - protocol and implementation write-up
 - `docs/protocol.html` - generated protocol documentation
-- `docs/make_diagrams.py` - script that generates the diagrams
+- `docs/diagramy/` - SVG flow, sequence and chart diagrams used by the HTML page
+- `docs/make_diagrams.py` - script that regenerates the diagrams
 
 ## What I learned
 
