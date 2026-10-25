@@ -1,0 +1,698 @@
+﻿<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<title>FIITMeteo – dokumentácia k prvému odovzdaniu (JSON protokol)</title>
+<style>
+  @page {
+    size: A4;
+    margin: 16mm 15mm 14mm 15mm;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 10.3pt;
+    line-height: 1.42;
+    color: #1b2430;
+    margin: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  h1 { font-size: 20pt; margin: 0 0 6pt; color: #14375c; }
+  h2 {
+    font-size: 14pt;
+    color: #14375c;
+    margin: 16pt 0 6pt;
+    padding-bottom: 3pt;
+    border-bottom: 1.4pt solid #2b5d8a;
+    page-break-after: avoid;
+  }
+  h3 {
+    font-size: 11.2pt;
+    color: #2b5d8a;
+    margin: 11pt 0 4pt;
+    page-break-after: avoid;
+  }
+  p { margin: 0 0 5pt; text-align: justify; }
+  ul, ol { margin: 2pt 0 6pt; padding-left: 16pt; }
+  li { margin-bottom: 2pt; }
+
+  .cover {
+    height: 258mm;
+    display: flex;
+    flex-direction: column;
+    page-break-after: always;
+  }
+  .cover .band {
+    background: #14375c;
+    color: #ffffff;
+    padding: 9mm 8mm;
+    margin: -2mm -2mm 0 -2mm;
+  }
+  .cover .band .kicker { font-size: 10pt; letter-spacing: 1.4pt; text-transform: uppercase; opacity: .85; }
+  .cover h1 { color: #ffffff; font-size: 24pt; line-height: 1.22; margin: 5mm 0 0; }
+  .cover .sub { font-size: 12.5pt; color: #d7e5f5; margin-top: 4mm; }
+  .cover .meta { margin-top: 12mm; font-size: 10.5pt; line-height: 1.9; }
+  .cover .meta b { display: inline-block; width: 34mm; color: #14375c; }
+  .cover .spacer { flex: 1; }
+  .cover .foot {
+    border-top: 1pt solid #c3d1e0;
+    padding-top: 3mm;
+    font-size: 9pt;
+    color: #5b6a7b;
+  }
+
+  .toc { page-break-after: always; }
+  .toc ol { list-style: none; padding-left: 0; margin-top: 8pt; font-size: 10.5pt; }
+  .toc ol li { margin-bottom: 5pt; }
+  .toc .num { display: inline-block; width: 9mm; color: #2b5d8a; font-weight: 600; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9.2pt;
+    margin: 4pt 0 8pt;
+    page-break-inside: avoid;
+  }
+  th {
+    background: #eef4fb;
+    text-align: left;
+    font-weight: 600;
+    color: #14375c;
+  }
+  th, td {
+    border: 0.5pt solid #b9c6d4;
+    padding: 3pt 4.5pt;
+    vertical-align: top;
+  }
+  td.num, th.num { text-align: right; }
+  .mono, code { font-family: Consolas, "Courier New", monospace; font-size: 8.8pt; }
+  pre {
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 8.3pt;
+    line-height: 1.35;
+    background: #f6f8fa;
+    border-left: 2.5pt solid #2b5d8a;
+    padding: 5pt 7pt;
+    margin: 3pt 0 8pt;
+    white-space: pre-wrap;
+    word-break: break-word;
+    page-break-inside: avoid;
+  }
+
+  figure {
+    margin: 4pt 0 10pt;
+    text-align: center;
+    page-break-inside: avoid;
+  }
+  figure img { width: 100%; }
+  figure.wide img { width: 100%; }
+  figcaption {
+    font-size: 8.8pt;
+    color: #55606e;
+    margin-top: 3pt;
+  }
+  .pagebreak { page-break-after: always; }
+
+  .note {
+    background: #f4f7fb;
+    border: 0.5pt solid #c3d1e0;
+    border-left: 2.5pt solid #2b5d8a;
+    padding: 5pt 8pt;
+    font-size: 9.3pt;
+    margin: 5pt 0 8pt;
+    page-break-inside: avoid;
+  }
+  .note b { color: #14375c; }
+
+  .small { font-size: 9pt; color: #4b5968; }
+  .ok { color: #2e7d32; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<!-- ======================================================================= -->
+<!-- COVER                                                                    -->
+<!-- ======================================================================= -->
+
+<div class="cover">
+  <div class="band">
+    <div class="kicker">FIITMeteo · projekt PKS · prvé odovzdanie</div>
+    <h1>Návrh a implementácia efektívneho komunikačného protokolu pre IoT meteorologické zariadenia</h1>
+    <div class="sub">Dokumentácia k Proof of Concept – JSON protokol nad UDP</div>
+  </div>
+
+  <div class="meta">
+    <div><b>Autor:</b> ______________________________________</div>
+    <div><b>Dátum:</b> 20. 10. 2026</div>
+    <div><b>Verzia:</b> 1.0 (prvé odovzdanie)</div>
+    <div><b>Programy:</b> <span class="mono">server.py</span>, <span class="mono">tester.py</span></div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="foot">
+    Dokument popisuje protokol, oba programy, vývojové a sekvenčné diagramy a návrh merania
+    efektivity prenosu. Protokol je v tejto fáze reprezentovaný čitateľnými JSON správami;
+    cieľom je overiť správanie protokolu a pripraviť podklad pre binárnu optimalizáciu.
+  </div>
+</div>
+
+<!-- ======================================================================= -->
+<!-- CONTENTS                                                                 -->
+<!-- ======================================================================= -->
+
+<div class="toc">
+  <h1>Obsah</h1>
+  <ol>
+    <li><span class="num">1</span> Prehľad riešenia a pokrytie požiadaviek</li>
+    <li><span class="num">2</span> Architektúra a konfigurácia</li>
+    <li><span class="num">3</span> Protokol</li>
+    <li><span class="num">4</span> Vývojové diagramy</li>
+    <li><span class="num">5</span> Sekvenčné diagramy</li>
+    <li><span class="num">6</span> Logovanie</li>
+    <li><span class="num">7</span> Použité knižnice</li>
+    <li><span class="num">8</span> Meranie efektivity prenosu dát</li>
+    <li><span class="num">9</span> Obmedzenia PoC a ďalšie kroky</li>
+  </ol>
+
+  <h2 style="margin-top: 22pt;">Zoznam obrázkov</h2>
+  <table>
+    <tr><th style="width: 22mm;">Obrázok</th><th>Názov</th></tr>
+    <tr><td>1</td><td>Server – cyklus prijímania správy</td></tr>
+    <tr><td>2</td><td>Server – monitor neaktivity a odosielanie KEEPALIVE</td></tr>
+    <tr><td>3</td><td>Tester – cyklus odosielania dátovej správy</td></tr>
+    <tr><td>4</td><td>Tester – cyklus prijímania správ</td></tr>
+    <tr><td>5</td><td>UAT 1 – registrácia štyroch senzorov a automatické odosielanie</td></tr>
+    <tr><td>6</td><td>UAT 2 – dodatočná dátová správa s vlastnými hodnotami</td></tr>
+    <tr><td>7</td><td>Veľkosti JSON správ merané na implementácii</td></tr>
+    <tr><td>8</td><td>Zloženie prenosu jedného merania na úrovni L2</td></tr>
+  </table>
+</div>
+
+<!-- ======================================================================= -->
+<!-- 1. OVERVIEW                                                              -->
+<!-- ======================================================================= -->
+
+<h2>1. Prehľad riešenia a pokrytie požiadaviek</h2>
+
+<p>
+  Riešenie tvoria dva samostatné programy v Pythone: <b>server</b> a <b>tester</b> (emulátor senzorov).
+  Komunikujú vlastným aplikačným protokolom nad UDP. Protokol je v tejto fáze reprezentovaný
+  JSON správami, ktoré sú čitateľné pri ladení a vo Wiresharku. Server prideľuje senzorom
+  relácie a tokeny, overuje integritu dát, potvrdzuje merania, vyžaduje retransmisiu poškodených
+  správ a kontroluje aktivitu senzorov pomocou KEEPALIVE správ.
+</p>
+
+<p>
+  Tester emuluje ľubovoľný počet senzorov všetkých štyroch typov. Po registrácii začne každý
+  senzor automaticky odosielať dáta každých 10 sekúnd. Používateľ môže odosielanie pozastaviť,
+  poslať vlastnú dátovú správu, vniesť chybu do nasledujúcej správy alebo ukončiť lokálnu
+  reláciu a simulovať tak odpojenie zariadenia.
+</p>
+
+<table>
+  <tr><th style="width: 12mm;">P</th><th>Požiadavka</th><th style="width: 70mm;">Ako je splnená</th></tr>
+  <tr><td>P1</td><td>Vlastný aplikačný protokol nad UDP</td><td>7 typov JSON správ, hlavička s <span class="mono">seq</span>, <span class="mono">sensor_id</span>, <span class="mono">token</span>, <span class="mono">crc</span> (§3)</td></tr>
+  <tr><td>P2</td><td>Server + testovací program pre všetky typy senzorov</td><td><span class="mono">server.py</span>, <span class="mono">tester.py</span> – 4 typy senzorov, ľubovoľný počet inštancií</td></tr>
+  <tr><td>P3</td><td>Registrácia a token; neplatný token sa zamietne</td><td>REGISTER → ACK s tokenom; každá DATA/KEEPALIVE_ACK sa overuje, inak NACK</td></tr>
+  <tr><td>P4</td><td>Automatické odosielanie každých 10 s, možnosť vypnúť/zapnúť</td><td>Worker vlákno senzora, po registrácii zapnuté; menu voľba 5</td></tr>
+  <tr><td>P5</td><td>Python a priamy <span class="mono">socket</span>, bez hotových protokolov</td><td>UDP socket, vlastná serializácia, CRC32, žiadna tretia strana (§7)</td></tr>
+  <tr><td>P6</td><td>Overenie integrity; poškodené dáta si server vypýta</td><td>CRC32 nad kanonickým JSON; pri zhode bez chyby, inak RETRANSMIT (§3.1)</td></tr>
+  <tr><td>P7</td><td>Vnesenie chyby pre vybraný senzor (poškodí ďalšiu správu)</td><td>Voľba 7: poškodí prvú číslicu v dátach nasledujúceho DATA datagramu, CRC prestane platiť</td></tr>
+  <tr><td>P8</td><td>Dodatočná dátová správa s vlastnými hodnotami</td><td>Voľba 6: interaktívne zadanie všetkých parametrov s kontrolou rozsahov; správa má <span class="mono">custom=true</span></td></tr>
+  <tr><td>P9</td><td>SENSOR IDLE, KEEPALIVE každých 5 s, disconnect po 30 s</td><td>Monitor relácií na serveri; 15 s + 5 s + 5 s + 5 s; senzor má 30 s watchdog (§3.4)</td></tr>
+  <tr><td>P10</td><td>Viac senzorov rovnakého typu, typ + jednoznačný identifikátor</td><td>Relácia je kľúčovaná <span class="mono">sensor_id</span>; rovnaké ID s iným typom je odmietnuté</td></tr>
+  <tr><td>P11</td><td>Bez ACK do 3 s opakovať, celkovo max. 3 odoslania</td><td>Pokus 1 + 2 opakovania, po treťom čakaní sa správa zahodí (§3.4)</td></tr>
+  <tr><td>P12</td><td>Jednotný formát logov v angličtine</td><td><span class="mono">TIMESTAMP | TYPE | LEVEL | SOURCE | EVENT/MESSAGE</span> (§6)</td></tr>
+  <tr><td>P13</td><td>IP a port konfigurovateľné z rozhrania, validácia, obsadený port</td><td>Menu oboch programov, kontrola IPv4 a rozsahu portu, ošetrený <span class="mono">OSError</span> pri binde</td></tr>
+  <tr><td>P14</td><td>Robustnosť voči očakávaným chybám</td><td>Validácia JSON, CRC, tokenu a rozsahov; výnimky vo vláknach sa logujú, program nespadne</td></tr>
+  <tr><td>P15</td><td>Logy vždy do súboru, voliteľne aj do konzoly</td><td><span class="mono">server.log</span> / <span class="mono">tester.log</span>, prepínač konzoly v menu</td></tr>
+</table>
+
+<table>
+  <tr><th style="width: 16mm;">UAT</th><th>Scenár</th><th style="width: 72mm;">Mechanizmus v riešení</th></tr>
+  <tr><td>UAT 1</td><td>Pripojenie a automatické generovanie správ</td><td>Voľba 4 zaregistruje 4 senzory; dáta každých 10 s, ACK; všetko v logu</td></tr>
+  <tr><td>UAT 2</td><td>Dodatočná správa s vlastnými hodnotami</td><td>Voľba 6 pre vybraný senzor; ostatné senzory odosielajú ďalej</td></tr>
+  <tr><td>UAT 3</td><td>Zavedenie chyby do dát</td><td>Voľba 7; server zaloguje chybu integrity a požiada RETRANSMIT, tester pošle správu znova</td></tr>
+  <tr><td>UAT 4</td><td>Odpojenie a kontrola aktivity</td><td>Voľba 5 (pause) a 8 (koniec relácie); server loguje SENSOR IDLE / SENSOR DISCONNECTED</td></tr>
+  <tr><td>UAT 5</td><td>Chýbajúce ACK a opakovanie</td><td>Server vie potlačiť ACK pre zvolený senzor (voľba 5); tester opakuje podľa P11</td></tr>
+</table>
+
+<div class="note">
+  <b>Overenie:</b> všetky scenáre boli otestované lokálne (dva procesy, skrátené časovače pre rýchly test)
+  a časovanie 15/5/5/5 s bolo overené aj s produkčnými konštantami. Výstupy testov nie sú súčasťou
+  tohto dokumentu; finálne UAT sa vykonávajú na dvoch fyzických zariadeniach podľa zadania.
+</div>
+
+<!-- ======================================================================= -->
+<!-- 2. ARCHITECTURE                                                          -->
+<!-- ======================================================================= -->
+
+<h2>2. Architektúra a konfigurácia</h2>
+
+<h3>2.1 Komponenty a vlákna</h3>
+<p>
+  Oba programy sú dvojvrstvové: sieťová časť beží vo vláknach, používateľské rozhranie v hlavnom
+  vlákne. Vďaka tomu zostáva menu dostupné aj počas komunikácie – napríklad server môže prijímať
+  dáta a súčasne umožní potlačiť ACK pre zvolený senzor (UAT 5).
+</p>
+<table>
+  <tr><th style="width: 32mm;">Program</th><th>Vlákna</th></tr>
+  <tr><td>Server</td><td>hlavné vlákno (menu) · UDP listener · idle monitor (kontrola relácií každých 0,2 s)</td></tr>
+  <tr><td>Tester</td><td>hlavné vlákno (menu) · UDP receiver · jedno worker vlákno pre každý senzor</td></tr>
+</table>
+
+<h3>2.2 Relácia a identita senzora</h3>
+<p>
+  Senzor je jednoznačne určený dvojicou <span class="mono">sensor_type</span> a
+  <span class="mono">sensor_id</span>. Server vedie relácie v tabuľke podľa
+  <span class="mono">sensor_id</span>; rovnaké ID s iným typom odmietne. Relácia obsahuje token,
+  adresu klienta, čas poslednej aktivity, počet odoslaných KEEPALIVE správ a stav idle.
+  Token je náhodných 64 bitov (<span class="mono">secrets.token_hex(8)</span>) a je súčasťou
+  každej ďalšej správy danej relácie. Opätovná registrácia rovnakého senzora vytvorí nový token
+  a starý prestane platiť.
+</p>
+
+<h3>2.3 Konfigurácia a spustenie</h3>
+<table>
+  <tr><th style="width: 34mm;">Parameter</th><th>Server</th><th>Tester</th></tr>
+  <tr><td>IP adresa</td><td>listen IP (predvolene <span class="mono">0.0.0.0</span>)</td><td>adresa servera (predvolene <span class="mono">127.0.0.1</span>)</td></tr>
+  <tr><td>Port</td><td>listen port (predvolene 9000)</td><td>port servera (predvolene 9000); lokálny bind port voliteľný</td></tr>
+  <tr><td>Validácia</td><td colspan="2">IPv4 adresa cez <span class="mono">ipaddress.IPv4Address</span>, port 0–65535, obsadený port zachytený ako <span class="mono">OSError</span> s chybovou hláškou</td></tr>
+</table>
+
+<pre>$ python server.py     # menu: 1) Configure and start listening
+$ python tester.py     # menu: 1) Configure server address, 4) Register one sensor of each type</pre>
+
+<p class="small">
+  Programy sú spustiteľné na dvoch fyzických zariadeniach v tej istej sieti: server sa naviaže
+  na IP rozhrania alebo na <span class="mono">0.0.0.0</span>, tester dostane IP servera.
+  Firewall musí povoliť zvolený UDP port.
+</p>
+
+<!-- ======================================================================= -->
+<!-- 3. PROTOCOL                                                              -->
+<!-- ======================================================================= -->
+
+<h2>3. Protokol</h2>
+
+<h3>3.1 Formát správy a integrita</h3>
+<p>
+  Každá správa je jeden JSON objekt prenesený v jednom UDP datagrame. Povinné polia sú
+  <span class="mono">type</span>, <span class="mono">seq</span> (sekvenčné číslo odosielateľa)
+  a <span class="mono">crc</span>. Podľa typu pribúdajú <span class="mono">sensor_type</span>,
+  <span class="mono">sensor_id</span>, <span class="mono">token</span>,
+  <span class="mono">ack_for</span>, <span class="mono">for_seq</span>,
+  <span class="mono">values</span>, <span class="mono">reason</span>.
+</p>
+<p>
+  <b>CRC32</b> sa počíta nad kanonickou podobou správy bez poľa <span class="mono">crc</span>:
+  kľúče zoradené abecedne, kompaktný JSON (bez medzier), UTF-8. Rovnaký algoritmus používajú obe
+  strany, takže akákoľvek zmena obsahu (alebo poškodenie prenosu) spôsobí nesúlad. CRC32 je
+  vhodné pre PoC: je rýchle, deterministické a odhalí bežné chyby prenosu. V binárnej verzii
+  bude mať hlavička vlastné pole pre CRC; pôjde o rovnaký princíp s kratším zápisom.
+</p>
+
+<pre>canonical = json.dumps({k: v for k, v in msg.items() if k != "crc"},
+                       sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+crc = zlib.crc32(canonical.encode("utf-8")) &amp; 0xFFFFFFFF   # 8 hex znakov</pre>
+
+<table>
+  <tr><th style="width: 34mm;">Typ správy</th><th>Smer</th><th>Účel</th></tr>
+  <tr><td><span class="mono">REGISTER</span></td><td>senzor → server</td><td>registrácia typu a ID, žiadosť o reláciu</td></tr>
+  <tr><td><span class="mono">ACK</span></td><td>server → senzor</td><td>potvrdenie registrácie (s tokenom) alebo dátovej správy</td></tr>
+  <tr><td><span class="mono">NACK</span></td><td>server → senzor</td><td>odmietnutie správy (neplatný token, neznáma relácia, zlé hodnoty)</td></tr>
+  <tr><td><span class="mono">DATA</span></td><td>senzor → server</td><td>namerané hodnoty alebo vlastné hodnoty od používateľa</td></tr>
+  <tr><td><span class="mono">RETRANSMIT</span></td><td>server → senzor</td><td>žiadosť o znovuzaslanie správy po chybe integrity</td></tr>
+  <tr><td><span class="mono">KEEPALIVE</span></td><td>server → senzor</td><td>overenie dostupnosti neaktívneho senzora</td></tr>
+  <tr><td><span class="mono">KEEPALIVE_ACK</span></td><td>senzor → server</td><td>odpoveď na KEEPALIVE, obnovenie aktivity relácie</td></tr>
+</table>
+
+<h3>3.2 Jednotlivé správy</h3>
+
+<p><b>REGISTER</b> – senzor oznámi typ a ID. Server overí typ, formát ID a duplicitu; pri úspechu
+vytvorí reláciu a vráti ACK s tokenom.</p>
+<pre>{"type":"REGISTER","seq":1,"sensor_type":"ThermoNode","sensor_id":"T-01","crc":"72e6469a"}</pre>
+
+<p><b>ACK</b> – potvrdenie registrácie obsahuje pridelený token; potvrdenie dát token neobsahuje.</p>
+<pre>{"type":"ACK","seq":10,"ack_for":1,"sensor_type":"ThermoNode","sensor_id":"T-01",
+ "token":"a574b506df2ec69f","crc":"4fe717a0"}
+
+{"type":"ACK","seq":11,"ack_for":2,"sensor_type":"ThermoNode","sensor_id":"T-01","crc":"da583df4"}</pre>
+
+<p><b>NACK</b> – správa nebola prijatá. Dôvod je v poli <span class="mono">reason</span>.</p>
+<pre>{"type":"NACK","seq":12,"ack_for":5,"sensor_id":"T-01","reason":"INVALID TOKEN","crc":"10351f80"}</pre>
+
+<p><b>DATA</b> – meranie. Hodnoty sú v objekte <span class="mono">values</span>, názvy parametrov
+sú malými písmenami podľa zadania. Vlastná správa od používateľa má navyše
+<span class="mono">"custom":true</span>.</p>
+<pre>{"type":"DATA","seq":2,"sensor_type":"ThermoNode","sensor_id":"T-01",
+ "token":"a574b506df2ec69f",
+ "values":{"temperature":21.3,"humidity":55.4,"dew_point":11.9,"pressure":1013.25},
+ "crc":"c3650c97"}</pre>
+
+<p><b>RETRANSMIT</b> – server požiada o znovuzaslanie správy s daným <span class="mono">seq</span>
+(po neúspešnej kontrole CRC).</p>
+<pre>{"type":"RETRANSMIT","seq":22,"sensor_id":"T-01","for_seq":7,
+ "reason":"INTEGRITY","crc":"27c0c803"}</pre>
+
+<p><b>KEEPALIVE</b> – server overuje senzor, od ktorého 15 s neprišli dáta.</p>
+<pre>{"type":"KEEPALIVE","seq":13,"sensor_type":"ThermoNode","sensor_id":"T-01",
+ "token":"a574b506df2ec69f","crc":"7b4a3e84"}</pre>
+
+<p><b>KEEPALIVE_ACK</b> – senzor potvrdí dostupnosť; server tým obnoví aktivitu relácie.</p>
+<pre>{"type":"KEEPALIVE_ACK","seq":3,"for_seq":13,"sensor_type":"ThermoNode",
+ "sensor_id":"T-01","token":"a574b506df2ec69f","crc":"79b01378"}</pre>
+
+<h3>3.3 Význam polí</h3>
+<table>
+  <tr><th style="width: 30mm;">Pole</th><th>Význam</th></tr>
+  <tr><td><span class="mono">seq</span></td><td>sekvenčné číslo odosielateľa; pri opakovaní tej istej správy sa nemení</td></tr>
+  <tr><td><span class="mono">ack_for</span></td><td><span class="mono">seq</span> potvrdzovanej správy</td></tr>
+  <tr><td><span class="mono">for_seq</span></td><td><span class="mono">seq</span> správy, ktorú treba znovu poslať (RETRANSMIT)</td></tr>
+  <tr><td><span class="mono">token</span></td><td>pridelený 64-bitový identifikátor relácie; overuje sa pri každej správe</td></tr>
+  <tr><td><span class="mono">values</span></td><td>objekt s nameranými hodnotami; presne zodpovedá typu senzora</td></tr>
+  <tr><td><span class="mono">crc</span></td><td>CRC32 kanonickej podoby správy bez tohto poľa, 8 hex znakov</td></tr>
+</table>
+
+<h3>3.4 Časovanie a stav relácie</h3>
+<table>
+  <tr><th style="width: 62mm;">Udalosť</th><th>Hodnota</th><th>Strana</th></tr>
+  <tr><td>periodické odosielanie dát</td><td>každých 10 s (prvá správa ihneď po registrácii)</td><td>tester</td></tr>
+  <tr><td>čakanie na ACK</td><td>3 s</td><td>tester</td></tr>
+  <tr><td>maximálny počet odoslaní správy</td><td>3 (pôvodné + 2 opakovania), potom zahodenie</td><td>tester</td></tr>
+  <tr><td>SENSOR IDLE</td><td>po 15 s bez dát od senzora s platnou reláciou</td><td>server</td></tr>
+  <tr><td>KEEPALIVE</td><td>prvý hneď po SENSOR IDLE, ďalšie každých 5 s (max. 3 bez odpovede)</td><td>server</td></tr>
+  <tr><td>SENSOR DISCONNECTED</td><td>po 15 + 5 + 5 + 5 = 30 s, token sa zneplatní</td><td>server</td></tr>
+  <tr><td>watchdog relácie</td><td>30 s od poslednej prijatej správy servera</td><td>tester</td></tr>
+</table>
+
+<p>
+  Po odpovedi na KEEPALIVE server ukončí prebiehajúce kolo. Ak senzor naďalej neposiela dáta,
+  o ďalších 15 s začne nové kolo. Po tretej nezodpovedanej KEEPALIVE správe čaká ešte 5 s a až
+  potom reláciu zruší – presne podľa zadania. Senzor má vlastný 30 s watchdog; na rozdiel od
+  doslovného znenia zadania ho obnovuje každá platná správa od servera (nielen KEEPALIVE),
+  pretože počas aktívneho odosielania dát server KEEPALIVE neposiela a relácia by inak zanikla.
+</p>
+
+<h3>3.5 Chybové stavy</h3>
+<table>
+  <tr><th style="width: 46mm;">Situácia</th><th>Reakcia servera</th><th style="width: 42mm;">Log</th></tr>
+  <tr><td>neplatný JSON / neúplný datagram</td><td>zahodenie</td><td>SYSTEM | WARNING</td></tr>
+  <tr><td>nesúlad CRC</td><td>RETRANSMIT, meranie sa neprijme</td><td>Integrity check failed …, retransmission requested</td></tr>
+  <tr><td>neznáma relácia</td><td>NACK (UNKNOWN SESSION)</td><td>SYSTEM | WARNING</td></tr>
+  <tr><td>neplatný token</td><td>NACK (INVALID TOKEN), relácia sa nemení</td><td>SYSTEM | WARNING</td></tr>
+  <tr><td>hodnota mimo rozsahu / zlý počet parametrov</td><td>NACK (INVALID VALUES)</td><td>Invalid data from …</td></tr>
+  <tr><td>duplicitné ID s iným typom</td><td>NACK (DUPLICATE SENSOR ID)</td><td>SYSTEM | WARNING</td></tr>
+  <tr><td>15 s bez dát</td><td>SENSOR IDLE + KEEPALIVE</td><td>SYSTEM | INFO</td></tr>
+  <tr><td>3× bez odpovede na KEEPALIVE</td><td>zrušenie relácie, zneplatnenie tokenu</td><td>SENSOR DISCONNECTED</td></tr>
+  <tr><td>obsadený port pri binde</td><td>chybová hláška v menu, program pokračuje</td><td>SYSTEM | ERROR</td></tr>
+</table>
+
+<!-- ======================================================================= -->
+<!-- 4. FLOWCHARTS                                                            -->
+<!-- ======================================================================= -->
+
+<div class="pagebreak"></div>
+<h2>4. Vývojové diagramy</h2>
+
+<h3>4.1 Server – cyklus prijímania správy</h3>
+<figure>
+  <img src="diagramy/flow_server_receive.svg" alt="Server – prijímací cyklus">
+  <figcaption>Obrázok 1: Spracovanie jedného UDP datagramu na serveri.</figcaption>
+</figure>
+<p>
+  Listener čaká v <span class="mono">recvfrom()</span>. Po prijatí datagramu sa pokúsi o JSON
+  parsovanie; nečitateľný vstup sa zaloguje a zahodí. Nasleduje kontrola CRC – pri nesúlade
+  server zaloguje chybu integrity, odošle RETRANSMIT s číslom poškodenej správy a pokračuje
+  čakaním na opakovanú správu. Pri platnom CRC sa správa spracuje podľa typu: registrácia
+  vytvorí reláciu a vráti token, dátová správa overí token a rozsahy hodnôt a je potvrdená ACK
+  (ak nie je ACK práve potlačené pre UAT 5), KEEPALIVE_ACK obnoví aktivitu relácie.
+  Každá vetva sa vracia na ďalší <span class="mono">recvfrom()</span>.
+</p>
+
+<div class="pagebreak"></div>
+<h3>4.2 Server – monitor neaktivity</h3>
+<figure>
+  <img src="diagramy/flow_server_monitor.svg" alt="Server – monitor neaktivity">
+  <figcaption>Obrázok 2: Idle monitor a odosielanie KEEPALIVE správ.</figcaption>
+</figure>
+<p>
+  Samostatné vlákno prechádza každých 0,2 s všetky relácie. Ak od poslednej aktivity uplynulo
+  aspoň 15 s, zaloguje <span class="mono">SENSOR IDLE</span> a naplánuje prvú KEEPALIVE správu.
+  Po každej odoslanej KEEPALIVE sa ďalšia naplánuje o 5 s. Po troch správach bez odpovede
+  (a ďalších 5 s čakania) reláciu zruší a token zneplatní. Odpoveď KEEPALIVE_ACK kolo ukončí;
+  ďalšie kolo sa začne až po ďalších 15 s ticha, takže senzor s vypnutým odosielaním zostáva
+  pripojený.
+</p>
+
+<div class="pagebreak"></div>
+<h3>4.3 Tester – cyklus odosielania dát</h3>
+<figure>
+  <img src="diagramy/flow_tester_send.svg" alt="Tester – odosielací cyklus">
+  <figcaption>Obrázok 3: Odoslanie dátovej správy vrátane opakovania a vnesenia chyby.</figcaption>
+</figure>
+<p>
+  Worker vlákno senzora čaká na interval 10 s (po zapnutí odosielania odošle hneď). Zostaví
+  DATA správu so sekvenčným číslom, tokenom a hodnotami. Ak je nastavené vnesenie chyby,
+  poškodí sa iba prvý prenos daného datagramu, takže CRC na serveri neprejde. Po odoslaní sa
+  čaká 3 s na ACK; pri RETRANSMIT alebo timeoute sa posiela tá istá správa s rovnakým
+  <span class="mono">seq</span>, najviac trikrát. Po treťom neúspešnom čakaní sa správa zahodí.
+  NACK cyklus ukončí bez opakovania.
+</p>
+
+<div class="pagebreak"></div>
+<h3>4.4 Tester – cyklus prijímania správ</h3>
+<figure>
+  <img src="diagramy/flow_tester_receive.svg" alt="Tester – prijímací cyklus">
+  <figcaption>Obrázok 4: Prijímanie a triedenie správ v testeri.</figcaption>
+</figure>
+<p>
+  Receiver vlákno overí JSON a CRC. KEEPALIVE spracuje priamo: ak relácia existuje a token
+  sedí, odošle KEEPALIVE_ACK a obnoví 30 s watchdog. ACK, NACK a RETRANSMIT sa podľa
+  <span class="mono">sensor_id</span> zaradia do fronty príslušného senzora, kde ich čakajúci
+  odosielací cyklus spáruje podľa <span class="mono">ack_for</span> /
+  <span class="mono">for_seq</span>. Každá platná správa od servera zároveň obnoví watchdog.
+</p>
+
+<!-- ======================================================================= -->
+<!-- 5. SEQUENCE DIAGRAMS                                                     -->
+<!-- ======================================================================= -->
+
+<div class="pagebreak"></div>
+<h2>5. Sekvenčné diagramy</h2>
+
+<h3>5.1 UAT 1 – registrácia a automatické odosielanie</h3>
+<figure>
+  <img src="diagramy/seq_uat1.svg" alt="UAT 1 – sekvenčný diagram">
+  <figcaption>Obrázok 5: Registrácia štyroch senzorov, pridelenie tokenov a periodické dáta.</figcaption>
+</figure>
+<p>
+  Tester zaregistruje štyri senzory (jeden z každého typu). Server každému pridelí token a od
+  tej chvíle prijíma dáta každých 10 s. Diagram zobrazuje dve dátové obdobia; v skutočnom
+  teste stačí, aby server prijal aspoň dve správy od každého senzora, čo je splnené po 20 s.
+  Všetky správy sú viditeľné vo Wiresharku (UDP port servera).
+</p>
+
+<h3>5.2 UAT 2 – dodatočná správa s vlastnými hodnotami</h3>
+<figure>
+  <img src="diagramy/seq_uat2.svg" alt="UAT 2 – sekvenčný diagram">
+  <figcaption>Obrázok 6: Vlastná dátová správa pre T-01 pri pokračujúcom odosielaní ostatných senzorov.</figcaption>
+</figure>
+<p>
+  Po zadaní hodnôt pre vybraný senzor tester odošle DATA s príznakom
+  <span class="mono">custom=true</span>. Server overí token, rozsahy aj počet parametrov,
+  zaloguje presne zadané hodnoty a potvrdí správu. Automatické odosielanie ostatných senzorov
+  nie je nijako pozastavené – každý senzor má vlastné vlákno a vlastnú frontu správ.
+</p>
+
+<!-- ======================================================================= -->
+<!-- 6. LOGGING                                                               -->
+<!-- ======================================================================= -->
+
+<h2>6. Logovanie</h2>
+<p>
+  Logy sú v angličtine a majú pevný formát podľa zadania. Čas je v UTC s milisekundami.
+  Zapisujú sa vždy do súboru v adresári programu; prepínačom v menu možno zapnúť aj výpis
+  do konzoly. Zápis je chránený zámkom, takže riadky z rôznych vlákien sa nemiešajú.
+</p>
+<pre>&lt;TIMESTAMP&gt; | &lt;TYPE&gt; | &lt;LEVEL&gt; | &lt;SOURCE&gt; | &lt;EVENT/MESSAGE&gt;
+
+2026-10-20T09:00:10.801Z | SYSTEM | INFO | SERVER | Server listening on 0.0.0.0:9000
+2026-10-20T09:00:10.805Z | SYSTEM | INFO | SERVER | Registered ThermoNode:T-01 from 192.168.1.5:51234
+2026-10-20T09:00:11.004Z | MESSAGE | INFO | SERVER | Received from TESTER:ThermoNode:T-01 {"type":"DATA",...,"values":{"temperature":21.3,...},"crc":"c3650c97"}
+2026-10-20T09:00:13.189Z | SYSTEM | WARNING | SERVER | Integrity check failed for ThermoNode:T-01, retransmission requested
+2026-10-20T09:00:15.952Z | SYSTEM | INFO | SERVER | SENSOR IDLE: WindSense:W-01
+2026-10-20T09:00:20.374Z | SYSTEM | WARNING | SERVER | SENSOR DISCONNECTED: WindSense:W-01 (token invalidated)</pre>
+
+<table>
+  <tr><th style="width: 24mm;">TYPE</th><th>Použitie</th></tr>
+  <tr><td><span class="mono">SYSTEM</span></td><td>lokálna udalosť programu – štart, chyba, zmena stavu senzora, SENSOR IDLE / DISCONNECTED</td></tr>
+  <tr><td><span class="mono">MESSAGE</span></td><td>odoslaná alebo prijatá správa protokolu, celý obsah v čitateľnej podobe</td></tr>
+</table>
+<p>
+  Úrovne zodpovedajú odporúčaniu Syslogu (RFC 5424): <span class="mono">INFO</span> pre bežnú
+  prevádzku, <span class="mono">WARNING</span> pre chybu integrity, potlačené ACK a odpojenie,
+  <span class="mono">ERROR</span> pre neodoslané alebo odmietnuté správy a zlyhania socketu.
+  Súbory: <span class="mono">server.log</span> a <span class="mono">tester.log</span>.
+</p>
+
+<!-- ======================================================================= -->
+<!-- 7. LIBRARIES                                                             -->
+<!-- ======================================================================= -->
+
+<h2>7. Použité knižnice</h2>
+<p>
+  Oba programy používajú výlučne štandardnú knižnicu Pythonu (verzia 3.10+). Žiadna knižnica
+  tretích strán neimplementuje komunikáciu ani protokol – socket, serializáciu, CRC aj logovanie
+  rieši vlastný kód, ako to vyžaduje P5.
+</p>
+<table>
+  <tr><th style="width: 34mm;">Knižnica</th><th>Použitie</th></tr>
+  <tr><td><span class="mono">socket</span></td><td>UDP socket, <span class="mono">bind</span>, <span class="mono">sendto</span>, <span class="mono">recvfrom</span></td></tr>
+  <tr><td><span class="mono">threading</span></td><td>listener, idle monitor, receiver a worker vlákna, zámky, ukončovanie</td></tr>
+  <tr><td><span class="mono">json</span></td><td>serializácia a parsovanie JSON správ</td></tr>
+  <tr><td><span class="mono">zlib</span></td><td>CRC32 pre integritu správ</td></tr>
+  <tr><td><span class="mono">hmac</span></td><td>porovnanie CRC a tokenov v konštantnom čase</td></tr>
+  <tr><td><span class="mono">secrets</span></td><td>generovanie náhodných session tokenov</td></tr>
+  <tr><td><span class="mono">queue</span></td><td>fronta odpovedí pre každý emulovaný senzor</td></tr>
+  <tr><td><span class="mono">ipaddress</span></td><td>validácia IPv4 adries v rozhraní</td></tr>
+  <tr><td><span class="mono">datetime</span>, <span class="mono">time</span></td><td>UTC čas s milisekundami, časovače (<span class="mono">monotonic</span>)</td></tr>
+  <tr><td><span class="mono">dataclasses</span>, <span class="mono">typing</span></td><td>štruktúra relácie a typové anotácie</td></tr>
+  <tr><td><span class="mono">random</span>, <span class="mono">re</span>, <span class="mono">os</span>, <span class="mono">sys</span></td><td>generovanie hodnôt, validácia ID, cesty a konzola</td></tr>
+</table>
+
+<!-- ======================================================================= -->
+<!-- 8. EFFICIENCY MEASUREMENT                                                -->
+<!-- ======================================================================= -->
+
+<div class="pagebreak"></div>
+<h2>8. Meranie efektivity prenosu dát</h2>
+
+<h3>8.1 Metodika</h3>
+<p>
+  Cieľom je zmerať, koľko bajtov prenosu spotrebuje jedno meranie a aký podiel z toho tvorí
+  užitočná informácia. Aby bolo porovnanie JSON a binárnej verzie korektné, musia obe varianty
+  bežať v rovnakom scenári: rovnaké typy a počet senzorov, rovnaký počet meraní, rovnaké
+  časovanie, rovnaké správanie ACK a retransmisií. Postup:
+</p>
+<ol>
+  <li>Spustiť server a tester na dvoch zariadeniach, zaregistrovať 4 senzory (jeden od každého typu).</li>
+  <li>Nechať bežať 30 minút bez zásahu; počas toho zachytávať komunikáciu vo Wiresharku na oboch stranách.</li>
+  <li>Zopakovať meranie 3× a použiť medián; osobitne odmerať jeden cyklus registrácie, jeden cyklus s vypnutým odosielaním (KEEPALIVE) a jeden cyklus s vnesenou chybou.</li>
+  <li>Exportovať z Wiresharku <span class="mono">frame.len</span>, <span class="mono">ip.len</span>, <span class="mono">udp.length</span> a časovú značku cez <span class="mono">tshark -T fields</span> a spočítať objemy.</li>
+  <li>Rovnaký scenár zopakovať s binárnou verziou protokolu a výsledky dať do spoločnej tabuľky a grafu.</li>
+</ol>
+
+<h3>8.2 Čo sa počíta do prenosu</h3>
+<p>
+  Meranie musí zahŕňať aj nižšie vrstvy, inak sú čísla neporovnateľné. Na jedno UDP datagram
+  pripočítame 42 bajtov hlavičiek (Ethernet II 14 B + IPv4 20 B + UDP 8 B); FCS (4 B) sa pri
+  zachytávaní bežne nezobrazuje, preto ho uvádzame osobitne. Pri malých rámoch treba zohľadniť
+  aj doplnenie na minimálnu dĺžku Ethernet rámca 64 B (vrátane FCS).
+</p>
+<table>
+  <tr><th>Vrstva</th><th class="num">Bajty</th><th>Poznámka</th></tr>
+  <tr><td>Ethernet II</td><td class="num">14</td><td>MAC adresy + EtherType (IPv4 = 0x0800)</td></tr>
+  <tr><td>IPv4</td><td class="num">20</td><td>bez opcií</td></tr>
+  <tr><td>UDP</td><td class="num">8</td><td>porty, dĺžka, kontrolný súčet</td></tr>
+  <tr><td>Ethernet FCS</td><td class="num">4</td><td>voliteľne; vo Wiresharku zvyčajne nie je</td></tr>
+  <tr><td><b>Spolu na datagram</b></td><td class="num"><b>42 (46)</b></td><td>bez (s) FCS</td></tr>
+</table>
+
+<h3>8.3 Predbežné meranie JSON verzie</h3>
+<p>
+  Veľkosti nižšie sú zmerané priamo na implementácii: správa sa zserializuje rovnakým kódom ako
+  pri prenose a zaráta sa CRC. Ide o dĺžku aplikačnej správy, teda bez hlavičiek L2–L4.
+</p>
+<table>
+  <tr><th>Správa</th><th class="num">Bajty (JSON)</th><th>Poznámka</th></tr>
+  <tr><td>DATA – ThermoNode</td><td class="num">197</td><td>4 parametre, hodnoty ako v príklade</td></tr>
+  <tr><td>DATA – WindSense</td><td class="num">197</td><td>4 parametre</td></tr>
+  <tr><td>DATA – RainDetect</td><td class="num">196</td><td>4 parametre</td></tr>
+  <tr><td>DATA – AirQuality</td><td class="num">172</td><td>3 parametre</td></tr>
+  <tr><td>ACK</td><td class="num">98</td><td>potvrdenie dát</td></tr>
+  <tr><td>ACK s tokenom (registrácia)</td><td class="num">125</td><td>pridelenie relácie</td></tr>
+  <tr><td>REGISTER</td><td class="num">90</td><td>jednorazovo na senzor</td></tr>
+  <tr><td>KEEPALIVE</td><td class="num">119</td><td>len pri neaktívnom senzore</td></tr>
+  <tr><td>RETRANSMIT</td><td class="num">99</td><td>len po chybe integrity</td></tr>
+  <tr><td>NACK</td><td class="num">97</td><td>len pri odmietnutí</td></tr>
+</table>
+
+<figure>
+  <img src="diagramy/chart_message_sizes.svg" alt="Veľkosti JSON správ">
+  <figcaption>Obrázok 7: Dĺžky jednotlivých JSON správ vrátane CRC32.</figcaption>
+</figure>
+
+<p>
+  Pre jedno meranie ThermoNode teda platí: DATA 197 B + ACK 98 B + dve sady hlavičiek
+  L2–L4 (2 × 42 B) = <b>379 B</b>. Pri intervalu 10 s je to 8 640 meraní za deň, teda
+  približne <b>3,27 MB na senzor a deň</b>. Štyri senzory spotrebujú približne 13,1 MB denne.
+  Registrácia je jednorazová (rádovo stovky bajtov), KEEPALIVE sa uplatní len pri výpadku dát.
+</p>
+
+<figure>
+  <img src="diagramy/chart_composition.svg" alt="Zloženie prenosu jedného merania">
+  <figcaption>Obrázok 8: Podiel dát, JSON manažmentu a hlavičiek L2–L4 na jednom meraní.</figcaption>
+</figure>
+
+<p>
+  Z grafu je zrejmé, prečo má binárna optimalizácia zmysel: samotné hodnoty tvoria len približne
+  21 % prenosu. Väčšinu spotrebúvajú názvy polí, token, CRC v hexadecimálnom zápise a hlavičky.
+</p>
+
+<h3>8.4 Plánované porovnanie s binárnou verziou</h3>
+<p>
+  Po implementácii binárnej verzie sa rovnaký scenár zmeria znova a výsledky sa doplnia do
+  tabuľky. Porovnávať sa budú minimálne tieto ukazovatele:
+</p>
+<table>
+  <tr><th>Ukazovateľ</th><th>JSON (PoC)</th><th>Binárna verzia</th><th>Rozdiel</th></tr>
+  <tr><td>Bajty na jedno meranie (L2)</td><td class="num">379</td><td class="num">—</td><td class="num">—</td></tr>
+  <tr><td>Z toho užitočné dáta</td><td class="num">79 B (20,8 %)</td><td class="num">—</td><td class="num">—</td></tr>
+  <tr><td>Z toho manažment protokolu</td><td class="num">216 B (57,0 %)</td><td class="num">—</td><td class="num">—</td></tr>
+  <tr><td>Z toho hlavičky L2–L4</td><td class="num">84 B (22,2 %)</td><td class="num">—</td><td class="num">—</td></tr>
+  <tr><td>Objem za 30 min, 4 senzory</td><td class="num">cca 273 kB</td><td class="num">—</td><td class="num">—</td></tr>
+  <tr><td>Odhad spotreby za deň</td><td class="num">cca 13,1 MB</td><td class="num">—</td><td class="num">—</td></tr>
+</table>
+<p>
+  Grafické výstupy budú dva: stĺpcový graf bajtov na meranie pre oba varianty a čiarový graf
+  kumulatívneho objemu v čase (rovnaký scenár). Tabuľka aj grafy budú súčasťou finálnej
+  dokumentácie; v tomto bode sú pripravené nástroje a metodika, aby bolo meranie opakovateľné.
+</p>
+
+<h3>8.5 Očakávaný prínos binárnej verzie</h3>
+<p>
+  Binárna hlavička môže mať 2 bity pre typ správy, 2 bity pre typ senzora, 8 bitov pre ID,
+  64 bitov pre token, 32 bitov pre časovú značku a 16 bitov pre CRC. Hodnoty je možné kódovať
+  s presne potrebným rozsahom (napr. teplota −50,0…60,0 po 0,1 °C = 1 101 hodnôt ≈ 11 bitov,
+  tlak 800,00…1 100,00 po 0,01 hPa ≈ 18 bitov). Aj s rezervou sa celé meranie ThermoNode
+  zmestí do približne 20–24 bajtov namiesto 197 bajtov JSON; ACK môže mať jednotky bajtov.
+  Cieľom druhej fázy je zmerať reálny rozdiel, nielen ho odhadovať.
+</p>
+
+<!-- ======================================================================= -->
+<!-- 9. LIMITATIONS                                                           -->
+<!-- ======================================================================= -->
+
+<h2>9. Obmedzenia PoC a ďalšie kroky</h2>
+<ul>
+  <li><b>Binárna verzia a LUA dissector</b> – zámerne nie sú súčasťou prvého odovzdania; protokol je navrhnutý tak, aby sa dali zachovať rovnaké stavy a časovanie.</li>
+  <li><b>Integrita, nie dôvernosť</b> – token chráni pred cudzou reláciou, CRC pred poškodením, ale prenos nie je šifrovaný. Pre produkciu by bolo vhodné doplniť autentizáciu a šifrovanie.</li>
+  <li><b>UAT na dvoch zariadeniach</b> – záverečné akceptačné testy sa musia vykonať na dvoch fyzických zariadeniach so zachytávaním vo Wiresharku; lokálne testy slúžia len na overenie logiky.</li>
+  <li><b>Meranie spotreby</b> – bajty sú dobrý proxy údaj; skutočnú životnosť batérie ovplyvňuje rádiový modul, preto by ďalším krokom bolo meranie energie na jedno meranie.</li>
+</ul>
+
+<p class="small" style="margin-top: 14pt;">
+  Programy: <span class="mono">server.py</span>, <span class="mono">tester.py</span>. Dokumentácia je
+  vygenerovaná z HTML zdroja v priečinku <span class="mono">dokumentacia_src</span>; diagramy sú
+  vektorové SVG, takže zostávajú čitateľné pri ľubovoľnom priblížení.
+</p>
+
+</body>
+</html>
+
