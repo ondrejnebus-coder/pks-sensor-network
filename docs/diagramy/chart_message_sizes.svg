@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="470" viewBox="0 0 1000 470" font-family="'Segoe UI',Arial,sans-serif">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#33475b"/></marker></defs>
+<rect width="1000" height="470" fill="#ffffff"/>
+<text text-anchor="middle" font-size="13" font-weight="bold" fill="#1b2430"><tspan x="500" y="32.0">Veľkosti správ JSON protokolu (merané na implementácii, bez L2–L4)</tspan></text>
+<line x1="110" y1="400" x2="960" y2="400" stroke="#33475b" stroke-width="1.4"/>
+<line x1="110" y1="400" x2="110" y2="90" stroke="#33475b" stroke-width="1.4"/>
+<line x1="110" y1="400.0" x2="960" y2="400.0" stroke="#e3e8ef" stroke-width="1"/>
+<text text-anchor="end" font-size="12" font-weight="normal" fill="#1b2430"><tspan x="98" y="400.0">0</tspan></text>
+<line x1="110" y1="325.0" x2="960" y2="325.0" stroke="#e3e8ef" stroke-width="1"/>
+<text text-anchor="end" font-size="12" font-weight="normal" fill="#1b2430"><tspan x="98" y="325.0">50</tspan></text>
+<line x1="110" y1="250.0" x2="960" y2="250.0" stroke="#e3e8ef" stroke-width="1"/>
+<text text-anchor="end" font-size="12" font-weight="normal" fill="#1b2430"><tspan x="98" y="250.0">100</tspan></text>
+<line x1="110" y1="175.0" x2="960" y2="175.0" stroke="#e3e8ef" stroke-width="1"/>
+<text text-anchor="end" font-size="12" font-weight="normal" fill="#1b2430"><tspan x="98" y="175.0">150</tspan></text>
+<line x1="110" y1="100.0" x2="960" y2="100.0" stroke="#e3e8ef" stroke-width="1"/>
+<text text-anchor="end" font-size="12" font-weight="normal" fill="#1b2430"><tspan x="98" y="100.0">200</tspan></text>
+<text text-anchor="middle" font-size="13.5" font-weight="normal" fill="#1b2430"><tspan x="30" y="250.0">bajty</tspan></text>
+<rect x="104.0" y="104.5" width="78" height="295.5" fill="#2b5d8a" rx="3"/>
+<text text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1b2430"><tspan x="143.0" y="90.5">197 B</tspan></text>
+<text text-anchor="middle" font-size="12.5" font-weight="normal" fill="#1b2430"><tspan x="143.0" y="411.75">DATA</tspan><tspan x="143.0" y="428.25">ThermoNode</tspan></text>
+<rect x="216.0" y="104.5" width="78" height="295.5" fill="#2b5d8a" rx="3"/>
+<text text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1b2430"><tspan x="255.0" y="90.5">197 B</tspan></text>
+<text text-anchor="middle" font-size="12.5" font-weight="normal" fill="#1b2430"><tspan x="255.0" y="411.75">DATA</tspan><tspan x="255.0" y="428.25">WindSense</tspan></text>
+<rect x="328.0" y="106.0" width="78" height="294.0" fill="#2b5d8a" rx="3"/>
+<text text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1b2430"><tspan x="367.0" y="92.0">196 B</tspan></text>
+<text text-anchor="middle" font-size="12.5" font-weight="normal" fill="#1b2430"><tspan x="367.0" y="411.75">DATA</tspan><tspan x="367.0" y="428.25">RainDetect</tspan></text>
+<rect x="440.0" y="142.0" width="78" height="258.0" fill="#2b5d8a" rx="3"/>
+<text text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1b2430"><tspan x="479.0" y="128.0">172 B</tspan></text>
+<text text-anchor="middle" font-size="12.5" font-weight="normal" fill="#1b2430"><tspan x="479.0" y="411.75">DATA</tspan><tspan x="479.0" y="428.25">AirQuality</tspan></text>
+<rect x="552.0" y="253.0" width="78" height="147.0" fill="#6d8fb3" rx="3"/>
+<text text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1b2430"><tspan x="591.0" y="239.0">98 B</tspan></text>
+<text text-anchor="middle" font-size="12.5" font-weight="normal" fill="#1b2430"><tspan x="591.0" y="420.0">ACK</tspan></text>
+<rect x="664.0" y="265.0" width="78" height="135.0" fill="#6d8fb3" rx="3"/>
+<text text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1b2430"><tspan x="703.0" y="251.0">90 B</tspan></text>
+<text text-anchor="middle" font-size="12.5" font-weight="normal" fill="#1b2430"><tspan x="703.0" y="420.0">REGISTER</tspan></text>
+<rect x="776.0" y="221.5" width="78" height="178.5" fill="#b7791f" rx="3"/>
+<text text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1b2430"><tspan x="815.0" y="207.5">119 B</tspan></text>
+<text text-anchor="middle" font-size="12.5" font-weight="normal" fill="#1b2430"><tspan x="815.0" y="420.0">KEEPALIVE</tspan></text>
+<rect x="888.0" y="251.5" width="78" height="148.5" fill="#b03a3a" rx="3"/>
+<text text-anchor="middle" font-size="13.5" font-weight="bold" fill="#1b2430"><tspan x="927.0" y="237.5">99 B</tspan></text>
+<text text-anchor="middle" font-size="12.5" font-weight="normal" fill="#1b2430"><tspan x="927.0" y="420.0">RETRANSMIT</tspan></text>
+<text text-anchor="middle" font-size="10.5" font-weight="normal" fill="#55606e"><tspan x="500" y="452.0">Hodnoty sú dĺžky JSON správy vrátane CRC32 (pole "crc").</tspan></text>
+</svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="330" viewBox="0 0 1000 330" font-family="'Segoe UI',Arial,sans-serif">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#33475b"/></marker></defs>
+<rect width="1000" height="330" fill="#ffffff"/>
+<text text-anchor="middle" font-size="15.5" font-weight="bold" fill="#1b2430"><tspan x="500" y="34.0">Jedno meranie ThermoNode na úrovni L2: 379 B</tspan></text>
+<rect x="60" y="70" width="183.43007915567281" height="70" fill="#2e7d32"/>
+<text text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff"><tspan x="151.71503957783642" y="105.0">79 B</tspan></text>
+<rect x="243.43007915567281" y="70" width="501.5303430079156" height="70" fill="#b7791f"/>
+<text text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff"><tspan x="494.1952506596306" y="105.0">216 B</tspan></text>
+<rect x="744.9604221635884" y="70" width="195.0395778364116" height="70" fill="#2b5d8a"/>
+<text text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff"><tspan x="842.4802110817942" y="105.0">84 B</tspan></text>
+<rect x="60" y="180" width="16" height="16" fill="#2e7d32" rx="2"/>
+<text text-anchor="start" font-size="13.5" font-weight="normal" fill="#1b2430"><tspan x="86" y="188.0">dátová časť JSON – 79 B (20,8 %)</tspan></text>
+<rect x="60" y="210" width="16" height="16" fill="#b7791f" rx="2"/>
+<text text-anchor="start" font-size="13.5" font-weight="normal" fill="#1b2430"><tspan x="86" y="218.0">manažment JSON – 216 B (57,0 %)</tspan></text>
+<rect x="60" y="240" width="16" height="16" fill="#2b5d8a" rx="2"/>
+<text text-anchor="start" font-size="13.5" font-weight="normal" fill="#1b2430"><tspan x="86" y="248.0">hlavičky Eth/IP/UDP – 84 B (22,2 %)</tspan></text>
+<text text-anchor="start" font-size="13" font-weight="normal" fill="#55606e"><tspan x="60" y="285.0">DATA 197 B + ACK 98 B + 2× hlavičky L2–L4 (2×42 B) = 379 B na jedno meranie.</tspan></text>
+</svg>

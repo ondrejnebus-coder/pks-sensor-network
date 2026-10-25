@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="900" viewBox="0 0 1000 900" font-family="'Segoe UI',Arial,sans-serif">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#33475b"/></marker></defs>
+<rect width="1000" height="900" fill="#ffffff"/>
+<rect x="130.0" y="23.0" width="400" height="54" rx="12" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.7"/><text text-anchor="middle" font-size="15" font-weight="normal" fill="#1b2430"><tspan x="330" y="50.0">UDP receiver vlákno (tester)</tspan></text>
+<rect x="130.0" y="111.0" width="400" height="58" rx="8" fill="#eef4fb" stroke="#2b5d8a" stroke-width="1.7"/><text text-anchor="middle" font-size="15" font-weight="normal" fill="#1b2430"><tspan x="330" y="140.0">recvfrom() – čakanie na datagram</tspan></text>
+<polygon points="330,211.0 500.0,270 330,329.0 160.0,270" fill="#fff8e6" stroke="#b7791f" stroke-width="1.7"/><text text-anchor="middle" font-size="15" font-weight="normal" fill="#1b2430"><tspan x="330" y="260.1">JSON a CRC</tspan><tspan x="330" y="279.90000000000003">v poriadku?</tspan></text>
+<polygon points="330,361.0 500.0,420 330,479.0 160.0,420" fill="#fff8e6" stroke="#b7791f" stroke-width="1.7"/><text text-anchor="middle" font-size="15" font-weight="normal" fill="#1b2430"><tspan x="330" y="410.1">typ správy =</tspan><tspan x="330" y="429.90000000000003">KEEPALIVE?</tspan></text>
+<rect x="140.0" y="536.0" width="380" height="78" rx="8" fill="#eef4fb" stroke="#2b5d8a" stroke-width="1.7"/><text text-anchor="middle" font-size="15" font-weight="normal" fill="#1b2430"><tspan x="330" y="565.1">ACK / NACK / RETRANSMIT</tspan><tspan x="330" y="584.9">priraď k senzoru podľa sensor_id a seq</tspan></text>
+<rect x="140.0" y="657.0" width="380" height="66" rx="8" fill="#eef4fb" stroke="#2b5d8a" stroke-width="1.7"/><text text-anchor="middle" font-size="15" font-weight="normal" fill="#1b2430"><tspan x="330" y="680.1">aktualizuj last_server_contact</tspan><tspan x="330" y="699.9">watchdog 30 s</tspan></text>
+<polyline points="330,77 330,111" fill="none" stroke="#33475b" stroke-width="1.8" marker-end="url(#arrow)"/>
+<polyline points="330,169 330,211" fill="none" stroke="#33475b" stroke-width="1.8" marker-end="url(#arrow)"/>
+<polyline points="330,329 330,361" fill="none" stroke="#33475b" stroke-width="1.8" marker-end="url(#arrow)"/>
+<polyline points="330,479 330,536" fill="none" stroke="#33475b" stroke-width="1.8" marker-end="url(#arrow)"/>
+<polyline points="330,614 330,657" fill="none" stroke="#33475b" stroke-width="1.8" marker-end="url(#arrow)"/>
+<polyline points="330,723 330,760 70,760 70,140 130,140" fill="none" stroke="#33475b" stroke-width="1.8" marker-end="url(#arrow)"/>
+<text text-anchor="middle" font-size="12" font-weight="normal" fill="#1b2430"><tspan x="180" y="748.0">ďalší datagram</tspan></text>
+<rect x="640.0" y="237.0" width="300" height="66" rx="8" fill="#fdecec" stroke="#b03a3a" stroke-width="1.7"/><text text-anchor="middle" font-size="14.5" font-weight="normal" fill="#1b2430"><tspan x="790" y="260.43">Zahoď datagram</tspan><tspan x="790" y="279.57">SYSTEM WARNING</tspan></text>
+<polyline points="500,270 640,270" fill="none" stroke="#33475b" stroke-width="1.8" marker-end="url(#arrow)"/><rect x="568.8625" y="240.85" width="32.275000000000006" height="18.225" fill="#ffffff" opacity="0.92"/><text text-anchor="middle" font-size="13.5" font-weight="normal" fill="#1b2430"><tspan x="585" y="253.0">nie</tspan></text>
+<polygon points="760,361.0 890.0,420 760,479.0 630.0,420" fill="#fff8e6" stroke="#b7791f" stroke-width="1.7"/><text text-anchor="middle" font-size="14.5" font-weight="normal" fill="#1b2430"><tspan x="760" y="410.43">token platný a</tspan><tspan x="760" y="429.57">relácia aktívna?</tspan></text>
+<polyline points="500,420 630,420" fill="none" stroke="#33475b" stroke-width="1.8" marker-end="url(#arrow)"/><rect x="553.8625" y="390.85" width="32.275000000000006" height="18.225" fill="#ffffff" opacity="0.92"/><text text-anchor="middle" font-size="13.5" font-weight="normal" fill="#1b2430"><tspan x="570" y="403.0">áno</tspan></text>
+<text text-anchor="start" font-size="12" font-weight="normal" fill="#1b2430"><tspan x="352" y="512.0">nie</tspan></text>
+<rect x="615.0" y="530.0" width="290" height="70" rx="8" fill="#eef4fb" stroke="#2b5d8a" stroke-width="1.7"/><text text-anchor="middle" font-size="14.5" font-weight="normal" fill="#1b2430"><tspan x="760" y="555.43">odošli KEEPALIVE_ACK</tspan><tspan x="760" y="574.5699999999999">obnov watchdog 30 s</tspan></text>
+<polyline points="760,479 760,530" fill="none" stroke="#33475b" stroke-width="1.8" marker-end="url(#arrow)"/><rect x="728.8625" y="490.85" width="32.275000000000006" height="18.225" fill="#ffffff" opacity="0.92"/><text text-anchor="middle" font-size="13.5" font-weight="normal" fill="#1b2430"><tspan x="745" y="503.0">áno</tspan></text>
+<rect x="635.0" y="658.0" width="250" height="64" rx="8" fill="#fdecec" stroke="#b03a3a" stroke-width="1.7"/><text text-anchor="middle" font-size="14.5" font-weight="normal" fill="#1b2430"><tspan x="760" y="690.0">ignoruj + WARNING</tspan></text>
+<polyline points="890,420 935,420 935,690 885,690" fill="none" stroke="#33475b" stroke-width="1.8" marker-end="url(#arrow)"/>
+<text text-anchor="middle" font-size="12" font-weight="normal" fill="#1b2430"><tspan x="925" y="402.0">nie</tspan></text>
+<polyline points="955,690 975,690 975,100 530,100 530,139" fill="none" stroke="#33475b" stroke-width="1.8" marker-end="url(#arrow)"/>
+<line x1="940" y1="270" x2="975" y2="270" stroke="#33475b" stroke-width="1.8"/>
+<line x1="905" y1="565" x2="975" y2="565" stroke="#33475b" stroke-width="1.8"/>
+<line x1="885" y1="690" x2="975" y2="690" stroke="#33475b" stroke-width="1.8"/>
+</svg>
